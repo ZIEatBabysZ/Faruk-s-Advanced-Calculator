@@ -1,6 +1,6 @@
 # Faruk's Advanced Calculator
 
-A Java-based command-line calculator that supports advanced mathematical operations including basic arithmetic, trigonometric functions, logarithmic functions, and more.
+A Java-based calculator with advanced mathematical operations. Available as both a **web application** and **command-line tool**.
 
 ## Features
 
@@ -28,23 +28,44 @@ A Java-based command-line calculator that supports advanced mathematical operati
 ## Getting Started
 
 ### Prerequisites
-- Java Development Kit (JDK) 8 or higher
-- Command line interface
+- Java Development Kit (JDK) 17 or higher
+- Maven 3.6+
 
-### Installation
-1. Clone or download the repository
-2. Navigate to the project directory
-3. Compile the Java file:
+### Running the Web Application
+
+1. Navigate to the project directory
+2. Run with Maven:
+   ```bash
+   mvn spring-boot:run
+   ```
+3. Open your browser: **http://localhost:8080**
+
+Or build and run the JAR:
+```bash
+mvn clean package
+java -jar target/faruks-advanced-calculator-1.0.0.jar
+```
+
+### Running the CLI Version
+
+1. Navigate to the project directory
+2. Compile the Java file:
    ```bash
    javac FAC.java
    ```
-4. Run the calculator:
+3. Run the calculator:
    ```bash
    java FaruksAdvancedCalculator.Calculator
    ```
 
 ## Usage
 
+### Web Interface
+1. Enter mathematical expressions using the on-screen buttons or keyboard
+2. Press `=` or `Enter` to calculate
+3. Supports all operations and functions listed below
+
+### CLI Interface
 1. Run the program
 2. Enter a mathematical expression when prompted
 3. The calculator will evaluate and display the result
@@ -52,11 +73,11 @@ A Java-based command-line calculator that supports advanced mathematical operati
 ### Example Expressions
 ```
 2 + 3 * 4          // Result: 14
-sin(pi/2)          // Result: 1.0
-5!                 // Result: 120
-2^3                // Result: 8.0
-log(100)           // Result: 2.0
-(2 + 3) * 4        // Result: 20
+sin(pi/2)           // Result: 1.0
+5!                  // Result: 120
+2^3                 // Result: 8.0
+log(100)            // Result: 2.0
+(2 + 3) * 4         // Result: 20
 ```
 
 ## Supported Functions
@@ -86,6 +107,13 @@ The calculator handles various error cases:
 - Invalid function names
 
 ## Technical Details
+
+### Web Application
+- Built with Spring Boot 3.2.0
+- Thymeleaf for server-side rendering
+- REST API for calculation endpoint
+
+### Calculator Engine
 - Uses stack-based evaluation algorithm
 - Implements operator precedence
 - Supports nested parentheses
@@ -95,7 +123,7 @@ The calculator handles various error cases:
 Feel free to submit issues, fork the repository, and create pull requests for any improvements.
 
 ## Author
-Faruk
-
+Faruk Büberci
+ 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

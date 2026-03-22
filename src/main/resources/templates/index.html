@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faruk's Advanced Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .calculator {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .display {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.5em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: right;
+            background: #f9f9f9;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        button {
+            padding: 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .number {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .operator {
+            background: #667eea;
+            color: white;
+        }
+        .function {
+            background: #764ba2;
+            color: white;
+        }
+        .equals {
+            background: #28a745;
+            color: white;
+            grid-column: span 2;
+        }
+        .clear {
+            background: #dc3545;
+            color: white;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            font-size: 0.85em;
+            color: #666;
+        }
+        .info h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .info ul {
+            margin-left: 20px;
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .result {
+            color: #28a745;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Faruk's Advanced Calculator</h1>
+        <input type="text" id="display" class="display" placeholder="Enter expression..." readonly>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="operator" onclick="appendValue('^')">^</button>
+            <button class="operator" onclick="appendValue('!')">!</button>
+            <button class="operator" onclick="appendValue('(')">(</button>
+
+            <button class="function" onclick="appendValue('sin(')">sin</button>
+            <button class="function" onclick="appendValue('cos(')">cos</button>
+            <button class="function" onclick="appendValue('tan(')">tan</button>
+            <button class="operator" onclick="appendValue(')')">)</button>
+
+            <button class="function" onclick="appendValue('log(')">log</button>
+            <button class="function" onclick="appendValue('ln(')">ln</button>
+            <button class="function" onclick="appendValue('pi')">pi</button>
+            <button class="operator" onclick="appendValue('/')">/</button>
+
+            <button class="number" onclick="appendValue('7')">7</button>
+            <button class="number" onclick="appendValue('8')">8</button>
+            <button class="number" onclick="appendValue('9')">9</button>
+            <button class="operator" onclick="appendValue('*')">*</button>
+
+            <button class="number" onclick="appendValue('4')">4</button>
+            <button class="number" onclick="appendValue('5')">5</button>
+            <button class="number" onclick="appendValue('6')">6</button>
+            <button class="operator" onclick="appendValue('-')">-</button>
+
+            <button class="number" onclick="appendValue('1')">1</button>
+            <button class="number" onclick="appendValue('2')">2</button>
+            <button class="number" onclick="appendValue('3')">3</button>
+            <button class="operator" onclick="appendValue('+')">+</button>
+
+            <button class="number" onclick="appendValue('0')">0</button>
+            <button class="number" onclick="appendValue('.')">.</button>
+            <button class="equals" onclick="calculateResult()">=</button>
+        </div>
+        <div id="message"></div>
+        <div class="info">
+            <h3>Supported Operations:</h3>
+            <ul>
+                <li>Operators: + - * / ^ ! %</li>
+                <li>Functions: sin, cos, tan, cot, asin, acos, atan, acot, ln, log, pi, exp</li>
+                <li>Use parentheses for nested expressions, e.g., sin(pi/2)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function appendValue(value) {
+            document.getElementById('display').value += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+            document.getElementById('message').innerHTML = '';
+        }
+
+        async function calculateResult() {
+            const expression = document.getElementById('display').value;
+            if (!expression) return;
+
+            try {
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'expression=' + encodeURIComponent(expression)
+                });
+                const result = await response.text();
+
+                const messageDiv = document.getElementById('message');
+                if (result.startsWith('Error:')) {
+                    messageDiv.innerHTML = '<div class="error">' + result + '</div>';
+                } else {
+                    messageDiv.innerHTML = '<div class="result">= ' + result + '</div>';
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML =
+                    '<div class="error">Connection error</div>';
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                calculateResult();
+            }
+        });
+    </script>
+</body>
+</html>
